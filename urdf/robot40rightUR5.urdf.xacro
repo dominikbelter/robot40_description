@@ -1,0 +1,479 @@
+<?xml version="1.0"?>
+<robot name="robot40" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:property name="headRadius" value="0.075" />
+  <xacro:property name="bodyLen" value="1.0" />
+  <xacro:property name="bodyRadius" value="0.075" />
+  <xacro:property name="shoulderLen" value="0.3" />
+  <xacro:property name="shoulderRadius" value="0.05" />
+  <xacro:property name="sideShoulderLen" value="0.15" />
+  <xacro:property name="sideShoulderRadius" value="0.05" />
+  <xacro:property name="baseWidth" value="0.65" />
+  <xacro:property name="baseLength" value="0.25" />
+  <xacro:property name="baseHeight" value="0.15" />
+  <xacro:property name="base_mass" value="12" />
+
+  <xacro:macro name="default_inertial" params="mass">
+    <inertial>
+      <mass value="${mass}" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+    </inertial>
+  </xacro:macro>
+
+    <link name="head">
+      <visual>
+	<origin xyz="0.0 0 0.67" rpy="0 0 -1.5708" />
+	<geometry>
+          <mesh filename="package://robot40_description/meshes/headBaseSimple.dae" />
+	</geometry>
+      </visual>
+      <collision>
+          <origin xyz="0.0 0 0.67" rpy="0 0 -1.5708" />
+	<geometry>
+          <mesh filename="package://robot40_description/meshes/headBaseSimple.dae" />
+	</geometry>
+      </collision>
+    </link>
+
+  <joint name="main_body_joint" type="fixed">
+    <parent link="base_link" />
+    <child link = "head" />
+    <origin xyz="-0.14 0.0 0.77" rpy="0.0 0.0 0.0" />
+  </joint>
+
+  <!-- utm30 laser sensor is called as box-->
+  <link name="box">  <!-- utm30 laser sensor link-->
+    <visual>
+	<origin xyz="-0.00 0.0 -0.0" rpy="1.5708 0.0 -0.0" />
+	<geometry>
+          <mesh filename="package://robot40_description/meshes/headUTMsimple.dae" />
+	</geometry>
+      </visual>
+      <collision>
+          <origin xyz="-0.00 0.0 -0.0" rpy="1.5708 0.0 -0.0" />
+	<geometry>
+          <mesh filename="package://robot40_description/meshes/headUTMsimple.dae" />
+	</geometry>
+      </collision>
+     <inertial>
+      <mass value="0.3" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+    </inertial>
+  </link>
+  
+  <link name="kinect_head_fake">
+  </link>
+ 
+  <link name="kinect_head_ir_optical_frame">
+  </link>
+
+  <joint name="kinect_head_ir_optical_frame_joint" type="fixed">
+    <parent link="kinect_head"/>
+    <child link="kinect_head_ir_optical_frame"/>
+    <axis xyz="0 0 1"/>
+    <origin xyz="-0.055 0.015 -0.015" rpy="0.03 0 -0.025"/>
+  </joint>
+
+  <link name="kinect_head">
+    <visual>
+	<origin xyz="0.00 0.0 0.0" rpy="0 0.0 0.0" />
+	<geometry>
+        <box size="0.01 0.01 0.01" />
+	</geometry>
+      </visual>
+      <collision>
+          <origin xyz="-0.00 0.0 -0.0" rpy="1.5708 0.0 -0.0" />
+	<geometry>
+        <box size="0.01 0.01 0.01" />
+	</geometry>
+      </collision>
+     <inertial>
+      <mass value="0.1" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+    </inertial>
+  </link>
+
+   <link name="realsense_wrist">
+    <visual>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0.0 0.0" />
+        <geometry>
+            <box size="0.01 0.01 0.01" />
+        </geometry>
+    </visual>
+     <collision>
+      <geometry>
+        <box size="0.0 0.0 0.0"/>
+      </geometry>
+    </collision>
+     <inertial>
+      <mass value="0.1" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+    </inertial>
+  </link>
+  
+ <link name="realsense_wrist_fake">
+  </link>
+
+  <link name="camera_depth_optical_frame">
+  </link>
+
+  <joint name="camera_depth_optical_frame_joint" type="fixed">
+    <parent link="realsense_wrist"/>
+    <child link="camera_depth_optical_frame"/>
+    <axis xyz="0 0 1"/>
+    <origin xyz="-0.1 0.097 0" rpy="0 0 0"/>
+  </joint>
+
+
+ <joint name="realsense_wrist_joint" type="fixed">
+    <parent link="right_arm_tool0" />
+    <child link = "realsense_wrist" />
+    <origin xyz="0.024 0.078 0.14" rpy="0 0 3.12"   />
+  </joint>
+ 
+ <joint name="realsense_wrist_joint_fake" type="fixed">
+    <parent link="realsense_wrist" />
+    <child link = "realsense_wrist_fake" />
+    <origin xyz="0 0 0" rpy="0 -1.57 1.57"   />
+  </joint> 
+ 
+  <joint name="id_10" type="continuous">
+    <parent link="head"/>
+    <child link="box"/>  <!-- utm30 laser sensor connected with head-->
+    <axis xyz="0 1 0"/>
+    <origin xyz="0.0 0.001 0.825" rpy="0 0 -0.0"/>
+    <limit effort="30" velocity="1.0"/>
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+
+  <joint name="id_11" type="fixed">
+    <parent link="right_arm_base"/>
+    <child link="kinect_head"/>
+    <axis xyz="0 0 1"/>
+    <origin xyz="-0.0825 0.0 -0.179" rpy="0.9797 -0.7653 -1.5844"/>
+    <limit effort="30" velocity="1.0"/>
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+
+  <joint name="id_11_fake" type="fixed">
+    <parent link="kinect_head"/>
+    <child link="kinect_head_fake"/>
+    <axis xyz="0 0 1"/>
+    <origin xyz="0 0 0" rpy="0 -1.57 1.57"/>
+    <limit effort="30" velocity="1.0"/>
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+
+  <transmission name="head_swivel_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <actuator name="$head_swivel_motor">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+    <joint name="id_10">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+  </transmission>
+
+  <gazebo reference="kinect_head_fake">
+    <sensor type="depth" name="head_kinect_depth_sensor">
+        <always_on>true</always_on>
+	<pose>0 0 0.67 0 0 0</pose>
+       <!-- <horizontal_fov> ${91.2*3.14/180} </horizontal_fov>
+        <vertical_fov> ${65.5*3.14/180} </vertical_fov>
+        <diagonal_fov> ${100.6*3.14/180} </diagonal_fov> -->
+        <update_rate>30.0</update_rate>
+        <camera>
+            
+          <image>
+            <format>R8G8B8</format>
+            <width>640</width>
+            <height>480</height>
+          </image>
+          <clip>
+            <near>0.05</near>
+            <far>4.0</far>
+          </clip>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.005</stddev>
+          </noise>
+        </camera>
+        <plugin name="head_kinect_frame_controller" filename="libgazebo_ros_openni_kinect.so">
+          <alwaysOn>true</alwaysOn>
+          <updateRate>6.0</updateRate>
+          <cameraName>head_kinect</cameraName>
+          <imageTopicName>color/image_raw</imageTopicName>
+          <depthImageTopicName>depth/image_rect_raw</depthImageTopicName>
+          <cameraInfoTopicName>color/camera_info</cameraInfoTopicName>
+          <depthImageCameraInfoTopicName>depth/camera_info</depthImageCameraInfoTopicName>
+          <pointCloudTopicName>depth_registered/points</pointCloudTopicName>
+          <frameName>kinect_head</frameName>
+          <pointCloudCutoff>0.05</pointCloudCutoff>
+          <rangeMax>4.0</rangeMax>
+        </plugin>
+      </sensor>
+  </gazebo>
+  <!-- -->
+  <gazebo reference="realsense_wrist_fake">
+    <sensor type="depth" name="realsense_depth_sensor">
+        <always_on>true</always_on>
+      <!--  <horizontal_fov> ${91.2*3.14/180} </horizontal_fov>
+        <vertical_fov> ${65.5*3.14/180} </vertical_fov>
+        <diagonal_fov> ${100.6*3.14/180} </diagonal_fov>  -->
+        <update_rate>6.0</update_rate>
+        
+        <camera>
+            
+          <image>
+            <format>R8G8B8</format>
+            <width>640</width>
+            <height>480</height>
+          </image>
+          <clip>
+            <near>0.05</near>
+            <far>4.0</far>
+          </clip>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.005</stddev>
+          </noise>
+        </camera>
+        <plugin name="realsense_wrist_frame_controller" filename="libgazebo_ros_openni_kinect.so">
+          <alwaysOn>true</alwaysOn>
+          <updateRate>6.0</updateRate>
+          <cameraName>realsense_wrist</cameraName>
+          <imageTopicName>color/image_raw</imageTopicName>
+          <depthImageTopicName>depth/image_rect_raw</depthImageTopicName>
+          <cameraInfoTopicName>color/camera_info</cameraInfoTopicName>
+          <depthImageCameraInfoTopicName>depth/camera_info</depthImageCameraInfoTopicName>
+          <pointCloudTopicName>depth_registered/points</pointCloudTopicName>
+          <frameName>realsense_wrist</frameName>
+          <pointCloudCutoff>0.05</pointCloudCutoff>
+          <rangeMax>4.0</rangeMax>
+        </plugin>
+      </sensor>
+  </gazebo>
+
+    <gazebo reference="box">  <!-- utm30 laser sensor gazebo reference-->
+	 <material>Gazebo/FlatBlack</material>
+        <sensor type="ray" name="head_hokuyo_sensor">
+        <pose>0 0 0.05 0 0 0</pose>
+        <visualize>true</visualize>
+        <update_rate>40</update_rate>
+        <ray>
+            <scan>
+              <horizontal>
+                <samples>720</samples>
+                <resolution>1</resolution>
+                <min_angle>-1.570796</min_angle>
++                <max_angle>1.570796</max_angle>
+              </horizontal>
+            </scan>
+            <range>
+              <min>0.10</min>
++              <max>30.0</max>
+              <resolution>0.01</resolution>
+            </range>
+            <noise>
+              <type>gaussian</type>
+              <mean>0.0</mean>
+              <stddev>0.01</stddev>
+            </noise>
+        </ray>
+        <plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_laser.so">
+            <topicName>/head/utm30/laser/scan</topicName>
+            <frameName>box</frameName>
+        </plugin>
+        </sensor>
+    </gazebo>
+  
+  
+  <!-- ur5 -->
+  <xacro:include filename="$(find robot40_description)/urdf/ur5light.urdf.xacro" />
+
+  <!-- right arm -->
+  <xacro:ur5_robot prefix="right_arm_" joint_limited="true"
+    shoulder_pan_lower_limit="${0.5*pi}" shoulder_pan_upper_limit="${1.5*pi}"
+    shoulder_lift_lower_limit="${-pi}" shoulder_lift_upper_limit="${0}"
+    elbow_joint_lower_limit="${-pi}" elbow_joint_upper_limit="${0}"
+    wrist_1_lower_limit="${-0.5*pi}" wrist_1_upper_limit="${0.5*pi}"
+    wrist_2_lower_limit="${0}"    wrist_2_upper_limit="${pi}"
+    wrist_3_lower_limit="${-pi}"    wrist_3_upper_limit="${pi}"
+    /> 
+
+  
+ <xacro:include filename="$(find robot40_description)/urdf/rg2.urdf.xacro" />
+ <xacro:rg2 prefix="right_arm_" />
+
+  <joint name="right_arm_shoulder" type="fixed">
+    <parent link="head" />
+    <child link = "right_arm_base_link" />
+    <origin xyz="-0.01 -0.23 0.62" rpy="2.3562 0.0 0.0" />
+  </joint>
+  
+  <joint name="right_arm_shoulder2_joint" type="fixed">
+    <parent link="head" />
+    <child link = "right_arm_base" />
+    <origin xyz="-0.01 -0.23 0.62" rpy="-2.3562 0.0 ${-pi}" />
+  </joint>
+  
+   <joint name="right_arm_rg2_joint" type="fixed">
+    <parent link="right_arm_wrist_3_link" />
+    <child link = "right_arm_rg2_body_link" />
+    <origin xyz="-0.0 0.08 0.0" rpy="-1.57 0.0 1.57" />
+  </joint>
+  
+   <joint name="camera_holder_base_joint" type="fixed">
+    <parent link="right_arm_rg2_body_link" />
+    <child link = "camera_holder_base_link" />
+    <origin xyz="-0.0 0.0 0.0" rpy="-3.14 0.0 0.0" />
+  </joint>
+  
+  <link name="camera_holder_base_link">
+      <visual>
+	<origin xyz="0.087 -0.013 -0.012" rpy="-1.57 0 1.57" />
+	<geometry>
+          <mesh filename="package://robot40_description/meshes/base.dae" scale="0.0008 0.0008 0.0008" />
+	</geometry>
+      </visual>
+    </link>
+
+    <joint name="astra_camera_joint" type="fixed">
+    <parent link="camera_holder_base_link" />
+    <child link = "astra_camera_link" />
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+  </joint>
+  
+  <link name="astra_camera_link">
+    <parent link="astra_camera_joint" />
+      <visual>
+	<origin xyz="0.0 -0.033 0.065" rpy="3.14 0 0" />
+	<geometry>
+          <mesh filename="package://robot40_description/meshes/astra_in_holder.dae" scale="0.0008 0.0008 0.0008" />
+	</geometry>
+      </visual>
+    </link>
+
+  
+  <link name="fake_link"> <!--for better stabillity-->
+    <visual>
+	<origin xyz="-0.00 0.0 -0.0" rpy="1.5708 0.0 -0.0" />
+        <geometry>
+          <box size="0.01 0.01 0.01" />
+        </geometry>
+      </visual>
+      <collision>
+          <origin xyz="-0.00 0.0 -0.0" rpy="1.5708 0.0 -0.0" />
+          <geometry>
+          <box size="0.01 0.01 0.01" />
+        </geometry>
+      </collision>
+     <inertial>
+      <mass value="5.5" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+    </inertial>
+  </link>
+  
+  <joint name="fake_link_joint" type="fixed">
+    <parent link="head" />
+    <child link = "fake_link" />
+    <origin xyz="0.2 0.37 0.62" rpy="2.3562 0.0 0.0" />
+  </joint>
+    
+    <link name="kinect2_base_link">
+        <visual>
+            <geometry>
+            <box size="0.01 0.01 0.01"/>
+            </geometry>
+            <origin xyz="0 0 0.0" rpy="0 0 0"/>
+        </visual>
+        <collision>
+            <geometry>
+            <box size="0.01 0.01 0.01"/>
+            </geometry>
+            <origin xyz="0 0 0.0" rpy="0 0 0"/>
+        </collision>
+         <inertial>
+      <mass value="0.1" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+    </inertial>
+    </link>
+
+
+   <link name="kinect_base_ir_optical_frame">
+   </link>
+
+  <joint name="kinect_base_ir_optical_frame_joint" type="fixed">
+    <parent link="kinect2_base_link"/>
+    <child link="kinect_base_ir_optical_frame"/>
+    <axis xyz="0 0 1"/>
+    <origin xyz="0.005 -0.018 -0.103" rpy="0 0 0.030"/>
+  </joint>
+	
+    <link name="kinect2_base_link_fake">
+    </link>
+
+  <joint name="base_kinect2_fake" type="fixed">
+    <parent link="kinect2_base_link"/>
+    <child link="kinect2_base_link_fake"/>
+    <origin xyz="0 0 0" rpy="0 -1.57 1.57"/>
+  </joint>
+
+
+  <joint name="base_kinect2" type="fixed">
+    <parent link="right_arm_base" />
+    <child link = "kinect2_base_link" />
+    <origin xyz="-0.53 0.84 0.6423" rpy="1.5325 -0.76417 -1.5842" />
+  </joint>
+  
+    <gazebo reference="kinect2_base_link_fake">
+    <sensor type="depth" name="base_kinect_depth_sensor">
+        <always_on>true</always_on>
+     <!--   <horizontal_fov> ${91.2*3.14/180} </horizontal_fov>
+        <vertical_fov> ${65.5*3.14/180} </vertical_fov>
+        <diagonal_fov> ${100.6*3.14/180} </diagonal_fov> -->
+        <update_rate>30.0</update_rate>
+        <camera>
+          <image>
+            <format>R8G8B8</format>
+            <width>640</width>
+            <height>480</height>
+          </image>
+          <clip>
+            <near>0.05</near>
+            <far>4.0</far>
+          </clip>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.005</stddev>
+          </noise>
+        </camera>
+        <plugin name="base_kinect_frame_controller" filename="libgazebo_ros_openni_kinect.so">
+          <alwaysOn>true</alwaysOn>
+          <updateRate>6.0</updateRate>
+          <cameraName>base_kinect</cameraName>
+          <imageTopicName>color/image_raw</imageTopicName>
+          <depthImageTopicName>depth/image_rect_raw</depthImageTopicName>
+          <cameraInfoTopicName>color/camera_info</cameraInfoTopicName>
+          <depthImageCameraInfoTopicName>depth/camera_info</depthImageCameraInfoTopicName>
+          <pointCloudTopicName>depth_registered/points</pointCloudTopicName>
+          <frameName>kinect2_base_link</frameName>
+          <pointCloudCutoff>0.05</pointCloudCutoff>
+          <rangeMax>4.0</rangeMax>
+        </plugin>
+      </sensor>
+  </gazebo>
+  
+  <!-- Gazebo plugin for ROS Control -->
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/</robotNamespace>
+    </plugin>
+     
+  </gazebo>
+
+</robot>
+

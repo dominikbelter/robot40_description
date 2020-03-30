@@ -1,0 +1,555 @@
+<?xml version="1.0" ?>
+<robot name="robot40_robot40" xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:include filename="$(find robot40_description)/urdf/common_properties.xacro"/>
+  <xacro:include filename="$(find robot40_description)/urdf/robot40_robot40.gazebo.xacro"/>
+  <xacro:include filename="$(find robot40_description)/urdf/deg_to_rad.xacro"/>
+  <xacro:include filename="$(find robot40_description)/urdf/robot40rightUR5.urdf.xacro"/>
+
+  <!-- Caster wheel characteristics -->
+  <xacro:property name="caster_radius"       value="0.025"/>
+  <xacro:property name="caster_width"        value="0.015"/>
+  <xacro:property name="caster_separation_x" value="0.343"/>
+  <xacro:property name="caster_separation_y" value="0.204"/>
+  <xacro:property name="caster_offset_x"     value="-0.002"/>
+  <xacro:property name="caster_offset_y"     value="0.0"/>
+  <xacro:property name="caster_offset_z"     value="0.05525"/>
+
+  <material name="light_gray">
+    <color rgba="${200/255} ${200/255} ${200/255} 1.0"/>
+  </material>
+
+  <link name="base_link">
+	<visual>
+      <origin xyz="0 0 0.31" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://robot40_description/meshes/bases/robot40_base_lr_reduced0p015color.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="dark"/>
+    </visual>
+  
+    <collision>
+      <origin xyz="0 0 0.31" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://robot40_description/meshes/bases/robot40_base_lr_reduced0p015color.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="30"/>
+      <inertia ixx="2.2124416e-03" ixy="-1.2294101e-05" ixz="3.4938785e-05"
+               iyy="2.1193702e-03" iyz="-5.0120904e-06"
+               izz="2.0064271e-03" />
+    </inertial>
+  </link>
+
+  <gazebo reference="base_link">
+    <material>Gazebo/Chrome</material>
+  </gazebo>
+
+  <link name="base_footprint"/>
+
+  <joint name="base_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+    <origin xyz="0.0 0.0 0.010" rpy="0 0 0"/>
+  </joint>
+
+    <link name="laser_base">
+         <collision>
+             <geometry>
+             <box size="0.01 0.01 0.01"/>
+             </geometry>
+             <origin xyz="0 0 0.0" rpy="0 0 0"/>
+         </collision>
+         <inertial>
+             <origin xyz="0 0 0" rpy="0 0 0"/>
+             <mass value="0"/>
+             <inertia ixx="0" ixy="0" ixz="0"
+                     iyy="0" iyz="0"
+                     izz="0" />
+         </inertial>
+	  </link>
+
+    <joint name="laser_base_joint" type="fixed">
+    	<parent link="base_link"/>
+    	<child link="laser_base"/>
+    	<origin xyz="0.2 0 0" rpy="0 0 0"/>
+  	</joint>
+
+  <joint name="wheel_left_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="wheel_left_link"/>
+    <origin xyz="0.0 0.1728325 0.066" rpy="-1.57 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
+  <link name="wheel_left_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="1.57 0 0"/>
+      <geometry>
+        <mesh filename="package://robot40_description/meshes/wheels/left_tire.stl" scale="0.00230303 0.00230303 0.00230303"/>
+      </geometry>
+      <material name="dark"/>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder length="0.04" radius="0.076"/>
+      </geometry>
+    </collision>
+
+    <inertial>
+      <origin xyz="0 0 0" />
+      <mass value="2.8498940e-02" />
+      <inertia ixx="1.1175580e-05" ixy="-4.2369783e-11" ixz="-5.9381719e-09"
+               iyy="1.1192413e-05" iyz="-1.4400107e-11"
+               izz="2.0712558e-05" />
+      </inertial>
+  </link>
+
+  <joint name="wheel_right_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="wheel_right_link"/>
+    <origin xyz="0.0 -0.1728325 0.066" rpy="-1.57 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
+  <link name="wheel_right_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="1.57 0 0"/>
+      <geometry>
+        <mesh filename="package://robot40_description/meshes/wheels/right_tire.stl" scale="0.00230303 0.00230303 0.00230303"/>
+      </geometry>
+      <material name="dark"/>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder length="0.04" radius="0.076"/>
+      </geometry>
+    </collision>
+
+    <inertial>
+      <origin xyz="0 0 0" />
+      <mass value="2.8498940e-02" />
+      <inertia ixx="1.1175580e-05" ixy="-4.2369783e-11" ixz="-5.9381719e-09"
+               iyy="1.1192413e-05" iyz="-1.4400107e-11"
+               izz="2.0712558e-05" />
+      </inertial>
+  </link>
+
+    <link name="caster_front_right_1_link">
+      <inertial>
+        <origin xyz="-0.00634599 0.00005347 -0.02037519" rpy="0 0 0"/>
+        <mass value="0.1"/>
+        <inertia  ixx="0.00001513" ixy="-0.00000003" ixz="0.00000267"
+                  iyy="0.00001309" iyz="-0.00000005"
+                  izz="0.00001198"/>
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://robot40_description/meshes/wheels/caster_1.stl"/>
+        </geometry>
+        <material name="Grey"/>
+      </visual>
+      <!--collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <cylinder radius="${radius}" length="${width}"/>
+        </geometry>
+      </collision-->
+    </link>
+
+    <link name="caster_front_left_1_link">
+      <inertial>
+        <origin xyz="-0.00634599 0.00005347 -0.02037519" rpy="0 0 0"/>
+        <mass value="0.1"/>
+        <inertia  ixx="0.00001513" ixy="-0.00000003" ixz="0.00000267"
+                  iyy="0.00001309" iyz="-0.00000005"
+                  izz="0.00001198"/>
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://robot40_description/meshes/wheels/caster_1.stl"/>
+        </geometry>
+        <material name="Grey"/>
+      </visual>
+      <!--collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <cylinder radius="${radius}" length="${width}"/>
+        </geometry>
+      </collision-->
+    </link>
+
+   <link name="caster_back_right_1_link">
+      <inertial>
+        <origin xyz="-0.00634599 0.00005347 -0.02037519" rpy="0 0 0"/>
+        <mass value="0.1"/>
+        <inertia  ixx="0.00001513" ixy="-0.00000003" ixz="0.00000267"
+                  iyy="0.00001309" iyz="-0.00000005"
+                  izz="0.00001198"/>
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://robot40_description/meshes/wheels/caster_1.stl"/>
+        </geometry>
+        <material name="Grey"/>
+      </visual>
+      <!--collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <cylinder radius="${radius}" length="${width}"/>
+        </geometry>
+      </collision-->
+    </link>
+
+    <link name="caster_back_left_1_link">
+      <inertial>
+        <origin xyz="-0.00634599 0.00005347 -0.02037519" rpy="0 0 0"/>
+        <mass value="0.1"/>
+        <inertia  ixx="0.00001513" ixy="-0.00000003" ixz="0.00000267"
+                  iyy="0.00001309" iyz="-0.00000005"
+                  izz="0.00001198"/>
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://robot40_description/meshes/wheels/caster_1.stl"/>
+        </geometry>
+        <material name="Grey"/>
+      </visual>
+      <!--collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <cylinder radius="${radius}" length="${width}"/>
+        </geometry>
+      </collision-->
+    </link>
+
+
+    <link name="caster_front_right_2_link">
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="0.1"/>
+        <inertia  ixx="0.00001075" ixy="0" ixz="0"
+                  iyy="0.00001541" iyz="0"
+                  izz="0.00001075"/>
+        </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://robot40_description/meshes/wheels/caster_2.stl"/>
+        </geometry>
+        <material name="Grey"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <cylinder radius="${caster_radius}" length="${caster_width}"/>
+        </geometry>
+      </collision>
+    </link>
+
+    <link name="caster_front_left_2_link">
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="0.1"/>
+        <inertia  ixx="0.00001075" ixy="0" ixz="0"
+                  iyy="0.00001541" iyz="0"
+                  izz="0.00001075"/>
+        </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://robot40_description/meshes/wheels/caster_2.stl"/>
+        </geometry>
+        <material name="Grey"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <cylinder radius="${caster_radius}" length="${caster_width}"/>
+        </geometry>
+      </collision>
+    </link>
+
+    <link name="caster_back_right_2_link">
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="0.1"/>
+        <inertia  ixx="0.00001075" ixy="0" ixz="0"
+                  iyy="0.00001541" iyz="0"
+                  izz="0.00001075"/>
+        </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://robot40_description/meshes/wheels/caster_2.stl"/>
+        </geometry>
+        <material name="Grey"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <cylinder radius="${caster_radius}" length="${caster_width}"/>
+        </geometry>
+      </collision>
+    </link>
+
+    <link name="caster_back_left_2_link">
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="0.1"/>
+        <inertia  ixx="0.00001075" ixy="0" ixz="0"
+                  iyy="0.00001541" iyz="0"
+                  izz="0.00001075"/>
+        </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://robot40_description/meshes/wheels/caster_2.stl"/>
+        </geometry>
+        <material name="Grey"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <cylinder radius="${caster_radius}" length="${caster_width}"/>
+        </geometry>
+      </collision>
+    </link>
+
+    <joint name="caster_front_right_1_joint" type="continuous">
+      <parent link="base_link"/>
+      <child link="caster_front_right_1_link"/>
+      <origin xyz="${caster_offset_x + caster_separation_x / 2} ${caster_offset_y - caster_separation_y / 2} ${caster_offset_z}" rpy="0 0 0"/>
+      <axis xyz="0 0 1"/>
+      <dynamics damping="0.001" friction="10.0"/>
+    </joint>
+
+    <joint name="caster_front_left_1_joint" type="continuous">
+      <parent link="base_link"/>
+      <child link="caster_front_left_1_link"/>
+      <origin xyz="${caster_offset_x + caster_separation_x / 2} ${caster_offset_y + caster_separation_y / 2} ${caster_offset_z}" rpy="0 0 0"/>
+      <axis xyz="0 0 1"/>
+      <dynamics damping="0.001" friction="10.0"/>
+    </joint>
+
+    <joint name="caster_back_right_1_joint" type="continuous">
+      <parent link="base_link"/>
+      <child link="caster_back_right_1_link"/>
+      <origin xyz="${caster_offset_x - caster_separation_x / 2} ${caster_offset_y - caster_separation_y / 2} ${caster_offset_z}" rpy="0 0 0"/>
+      <axis xyz="0 0 1"/>
+      <dynamics damping="0.001" friction="10.0"/>
+    </joint>
+
+    <joint name="caster_back_left_1_joint" type="continuous">
+      <parent link="base_link"/>
+      <child link="caster_back_left_1_link"/>
+      <origin xyz="${caster_offset_x - caster_separation_x / 2} ${caster_offset_y + caster_separation_y / 2} ${caster_offset_z}" rpy="0 0 0"/>
+      <axis xyz="0 0 1"/>
+      <dynamics damping="0.001" friction="10.0"/>
+    </joint>
+
+    <joint name="caster_front_right_2_joint" type="continuous">
+      <parent link="caster_front_right_1_link"/>
+      <child link="caster_front_right_2_link"/>
+      <origin xyz="-0.016 0.0000 -0.040" rpy="${-90.0 * deg_to_rad} 0 0"/>
+      <axis xyz="0 0 1"/>
+    </joint>
+
+    <joint name="caster_front_left_2_joint" type="continuous">
+      <parent link="caster_front_left_1_link"/>
+      <child link="caster_front_left_2_link"/>
+      <origin xyz="-0.016 0.0000 -0.040" rpy="${-90.0 * deg_to_rad} 0 0"/>
+      <axis xyz="0 0 1"/>
+    </joint>
+
+    <joint name="caster_back_right_2_joint" type="continuous">
+      <parent link="caster_back_right_1_link"/>
+      <child link="caster_back_right_2_link"/>
+      <origin xyz="-0.016 0.0000 -0.040" rpy="${-90.0 * deg_to_rad} 0 0"/>
+      <axis xyz="0 0 1"/>
+    </joint>
+
+    <joint name="caster_back_left_2_joint" type="continuous">
+      <parent link="caster_back_left_1_link"/>
+      <child link="caster_back_left_2_link"/>
+      <origin xyz="-0.016 0.0000 -0.040" rpy="${-90.0 * deg_to_rad} 0 0"/>
+      <axis xyz="0 0 1"/>
+    </joint>
+
+    <gazebo reference="caster_front_right_1_link">
+      <kp>1000000.0</kp>
+      <kd>1000.0</kd>
+      <mu1>200.0</mu1>
+      <mu2>200.0</mu2>
+      <fdir1>0 0 1</fdir1>
+      <maxVel>1.0</maxVel>
+      <minDepth>0.0</minDepth>
+      <implicitSpringDamper>0</implicitSpringDamper>
+      <material>Gazebo/Grey</material>
+    </gazebo>
+
+    <gazebo reference="caster_front_left_1_link">
+      <kp>1000000.0</kp>
+      <kd>1000.0</kd>
+      <mu1>200.0</mu1>
+      <mu2>200.0</mu2>
+      <fdir1>0 0 1</fdir1>
+      <maxVel>1.0</maxVel>
+      <minDepth>0.0</minDepth>
+      <implicitSpringDamper>0</implicitSpringDamper>
+      <material>Gazebo/Grey</material>
+    </gazebo>
+
+    <gazebo reference="caster_back_right_1_link">
+      <kp>1000000.0</kp>
+      <kd>1000.0</kd>
+      <mu1>200.0</mu1>
+      <mu2>200.0</mu2>
+      <fdir1>0 0 1</fdir1>
+      <maxVel>1.0</maxVel>
+      <minDepth>0.0</minDepth>
+      <implicitSpringDamper>0</implicitSpringDamper>
+      <material>Gazebo/Grey</material>
+    </gazebo>
+
+    <gazebo reference="caster_back_left_1_link">
+      <kp>1000000.0</kp>
+      <kd>1000.0</kd>
+      <mu1>200.0</mu1>
+      <mu2>200.0</mu2>
+      <fdir1>0 0 1</fdir1>
+      <maxVel>1.0</maxVel>
+      <minDepth>0.0</minDepth>
+      <implicitSpringDamper>0</implicitSpringDamper>
+      <material>Gazebo/Grey</material>
+    </gazebo>
+
+    <gazebo reference="caster_front_right_2_link">
+      <kp>1000000.0</kp>
+      <kd>1000.0</kd>
+      <mu1>200.0</mu1>
+      <mu2>200.0</mu2>
+      <fdir1>1 0 0</fdir1>
+      <maxVel>1.0</maxVel>
+      <minDepth>0.00</minDepth>
+      <implicitSpringDamper>0</implicitSpringDamper>
+      <material>Gazebo/Grey</material>
+    </gazebo>
+
+
+    <gazebo reference="caster_front_left_2_link">
+      <kp>1000000.0</kp>
+      <kd>1000.0</kd>
+      <mu1>200.0</mu1>
+      <mu2>200.0</mu2>
+      <fdir1>1 0 0</fdir1>
+      <maxVel>1.0</maxVel>
+      <minDepth>0.00</minDepth>
+      <implicitSpringDamper>0</implicitSpringDamper>
+      <material>Gazebo/Grey</material>
+    </gazebo>
+
+    <gazebo reference="caster_back_right_2_link">
+      <kp>1000000.0</kp>
+      <kd>1000.0</kd>
+      <mu1>200.0</mu1>
+      <mu2>200.0</mu2>
+      <fdir1>1 0 0</fdir1>
+      <maxVel>1.0</maxVel>
+      <minDepth>0.00</minDepth>
+      <implicitSpringDamper>0</implicitSpringDamper>
+      <material>Gazebo/Grey</material>
+    </gazebo>
+
+
+    <gazebo reference="caster_back_left_2_link">
+      <kp>1000000.0</kp>
+      <kd>1000.0</kd>
+      <mu1>200.0</mu1>
+      <mu2>200.0</mu2>
+      <fdir1>1 0 0</fdir1>
+      <maxVel>1.0</maxVel>
+      <minDepth>0.00</minDepth>
+      <implicitSpringDamper>0</implicitSpringDamper>
+      <material>Gazebo/Grey</material>
+    </gazebo>
+
+  <joint name="Additional_Mass_joint" type="fixed">
+    <axis xyz="0 1 0" rpy="0 0 0" />
+    <parent link="base_link"/>
+    <child link="Additional_Mass_link"/>
+    <origin xyz="-0.22 0.25 1.28" rpy="0 0 0"/>
+  </joint>
+
+  <link name="Additional_Mass_link">
+    <visual>
+      <geometry>
+        <cylinder length="0.06" radius="0.02"/>
+      </geometry>
+      <material name="Dark">
+        <color rgba="0 0 .8 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.06" radius="0.02"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.25"/>
+      <inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>
+    </inertial>
+  </link>
+
+  <gazebo reference="Additional_Mass_link">
+    <mu1 value="200.0"/>
+    <mu2 value="20.0"/>
+    <kp value="10000000.0" />
+    <kd value="1.0" />
+    <material>Gazebo/White</material>
+  </gazebo>
+
+  <gazebo reference="wheel_right_link">
+    <mu1 value="450.0"/>
+    <mu2 value="450.0"/>
+    <kp value="10000000.0" />
+    <kd value="1.0" />
+    <material>Gazebo/Grey</material>
+  </gazebo>
+  
+  <gazebo reference="wheel_left_link">
+    <mu1 value="450.0"/>
+    <mu2 value="450.0"/>
+    <kp value="10000000.0" />
+    <kd value="1.0" />
+    <material>Gazebo/Grey</material>
+  </gazebo>
+
+  <joint name="imu_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="imu_link"/>
+    <origin xyz="-0.032 0 0.068" rpy="0 0 0"/>
+  </joint>
+
+  <link name="imu_link"/>
+
+  <joint name="scan_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="base_scan"/>
+    <origin xyz="0.2 0 0.4" rpy="0 0 0"/>
+  </joint>
+
+  <link name="base_scan">  
+  </link>
+
+</robot>

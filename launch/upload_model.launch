@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="model" default="robot40" doc="model type [burger, waffle, waffle_pi, robot40]"/>
+  <arg name="x_pos" default="0.0"/>
+  <arg name="y_pos" default="0.0"/>
+  <arg name="z_pos" default="0.0"/>
+  <arg name="limited" default="true"/>
+  <arg name="sim" default="true"/>
+  <arg name="withGazeboGUI" default="false"/>
+  <arg name="HeadlessGazeboGUI" default="true"/> 
+  <arg name="world" default="empty"/> 
+
+  <param name="robot_description" command="$(find xacro)/xacro --inorder $(find robot40_description)/urdf/robot40_rightUR5.urdf.xacro" />
+
+  <node pkg="tf" type="static_transform_publisher" name="kinect_head_broadcaster" args="-0.055 0.015 -0.015 0.03 0 -0.025 kinect_head kinect_head_ir_optical_frame 100" />
+  
+  <!-- Robot state publisher for the TFs -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher">
+  </node>
+  
+  <node pkg="rviz" type="rviz" name="rviz" />
+
+</launch>
