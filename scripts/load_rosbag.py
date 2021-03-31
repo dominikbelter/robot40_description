@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import rosbag
 import matplotlib.pyplot as plt
 bag = rosbag.Bag('2020-03-30-12-29-43.bag')
